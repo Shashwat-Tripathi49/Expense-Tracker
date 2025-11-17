@@ -29,7 +29,7 @@ function initCharts(){
   });
 }
 function load(){
-  try {
+  try {""
     const raw = localStorage.getItem(STORAGE_KEY);
     if(raw) state = JSON.parse(raw);
   } catch(e){ console.error('load err',e); }
