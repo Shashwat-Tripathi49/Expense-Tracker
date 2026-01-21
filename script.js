@@ -61,6 +61,47 @@ function bindEvents() {
     a.download = 'spendcraft-backup.json';
     a.click();
   });
+
+  q('#exportPdfBtn')?.addEventListener('click', generatePdf);
+}
+
+async function generatePdf() {
+  const btn = q('#exportPdfBtn');
+  const originalText = btn.textContent;
+  btn.textContent = 'Generating...';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    // Capture Main Dashboard
+    const dashboard = q('#dashboardMain');
+    const canvas = await html2canvas(dashboard, { scale: 2, backgroundColor: '#0f172a' });
+    const imgData = canvas.toDataURL('image/png');
+
+    const imgProps = doc.getImageProperties(imgData);
+    const pdfHeight = (imgProps.height * pageWidth) / imgProps.width;
+
+    // Add Title
+    doc.setFontSize(22);
+    doc.setTextColor(40, 40, 40);
+    doc.text("SpendCraft Financial Report", 14, 20);
+    doc.setFontSize(12);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+
+    // Add Image
+    doc.addImage(imgData, 'PNG', 0, 40, pageWidth, pdfHeight);
+
+    doc.save(`spendcraft-report-${Date.now()}.pdf`);
+
+  } catch (err) {
+    console.error(err);
+    alert('Failed to generate PDF');
+  } finally {
+    btn.textContent = originalText;
+  }
 }
 
 function saveTransaction() {
