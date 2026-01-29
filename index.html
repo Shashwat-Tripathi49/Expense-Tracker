@@ -55,7 +55,8 @@
       <div class="controls">
         <button id="exportPdfBtn" class="btn primary small" title="Download PDF Report">Download Report</button>
         <button id="backupBtn" class="btn ghost small" title="Backup Data">Backup</button>
-        <button id="themeBtn" class="btn ghost small" title="Toggle Theme">Theme</button>
+        <button id="settingsBtn" class="btn ghost small" title="Settings">⚙️ Settings</button>
+        <button id="themeBtn" class="btn ghost small" title="Toggle Theme">🌓</button>
       </div>
     </header>
 
@@ -82,25 +83,46 @@
       </div>
 
       <!-- Row 2: Charts -->
-      <div class="chart-container" style="grid-column: 1 / 2;">
+      <div class="chart-container">
         <div class="chart-header">
           <div class="chart-title">Cash Flow & Spend Trend</div>
         </div>
         <canvas id="mainChart"></canvas>
       </div>
 
-      <div class="chart-container" style="grid-column: 2 / -1;">
+      <div class="chart-container">
         <div class="chart-header">
           <div class="chart-title">Spending by Category</div>
         </div>
         <canvas id="doughnutChart"></canvas>
       </div>
 
-      <!-- Row 3: Recent Activity -->
+      <!-- Row 3: Calendar View -->
+      <div class="calendar-section">
+        <div class="chart-header">
+          <div class="chart-title">Calendar View</div>
+          <div class="calendar-controls">
+            <button class="btn ghost small" id="prevMonth">←</button>
+            <span id="currentMonth" style="margin: 0 16px; font-weight: 600;">January 2026</span>
+            <button class="btn ghost small" id="nextMonth">→</button>
+          </div>
+        </div>
+        <div id="calendarGrid" class="calendar-grid">
+          <!-- JS populates this -->
+        </div>
+      </div>
+
+      <!-- Row 4: Recent Activity -->
       <div class="activity-feed" style="grid-column: 1 / -1;">
         <div class="chart-header">
-          <div class="chart-title">Recent Transactions</div>
-          <button class="btn ghost small" id="viewAllBtn">View All</button>
+          <div class="chart-title">Transactions</div>
+          <div class="controls">
+            <select id="filterPeriod" class="form-control small">
+              <option value="all">All Time</option>
+              <option value="15" selected>Last 15 Days</option>
+              <option value="30">Last 30 Days</option>
+            </select>
+          </div>
         </div>
         <div id="txList" class="tx-list">
           <!-- JS populates this -->
@@ -151,6 +173,82 @@
 
         <div class="form-group">
           <button id="addBtnSubmit" class="btn" style="width:100%">Save Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsOverlay" class="modal-overlay">
+    <div class="modal">
+      <div class="chart-header">
+        <div class="chart-title">Settings</div>
+        <button id="closeSettings" class="btn ghost small">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label>Monthly Budget (₹)</label>
+        <input id="budgetInput" type="number" class="form-control" placeholder="50000" />
+      </div>
+
+      <div class="form-group">
+        <label>Auto-cleanup transactions older than 15 days</label>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoCleanup" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <button id="saveBudget" class="btn" style="width:100%">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Transaction Modal -->
+  <div id="editModalOverlay" class="modal-overlay">
+    <div class="modal">
+      <div class="chart-header">
+        <div class="chart-title">Edit Transaction</div>
+        <button id="closeEditModal" class="btn ghost small">✕</button>
+      </div>
+
+      <form id="editTxForm" onsubmit="return false;">
+        <input type="hidden" id="editTxId" />
+
+        <div class="form-group">
+          <label>Description</label>
+          <input id="editDesc" type="text" class="form-control" placeholder="Netflix, Salary, etc." required />
+        </div>
+
+        <div class="flex gap-2">
+          <div class="form-group" style="flex:1">
+            <label>Amount (Negative for expense)</label>
+            <input id="editAmount" type="number" step="0.01" class="form-control" placeholder="-500" required />
+          </div>
+          <div class="form-group" style="flex:1">
+            <label>Category</label>
+            <select id="editCategory" class="form-control">
+              <option>Food</option>
+              <option>Transport</option>
+              <option>Shopping</option>
+              <option>Entertainment</option>
+              <option>Bills</option>
+              <option>Income</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <div class="form-group" style="flex:1">
+            <label>Date</label>
+            <input id="editDate" type="date" class="form-control" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button id="updateBtnSubmit" class="btn" style="width:100%">Update Transaction</button>
         </div>
       </form>
     </div>
